@@ -1,0 +1,90 @@
+{
+  "Other": {
+    "question": "My thoughts involved other people",
+    "scale": "Not at all                            Completely"
+  },
+  "Emotion": {
+    "question": "The content of my thoughts was:",
+    "scale": "Negative                            Positive"
+  },
+  "Realistic": {
+    "question": "I was thinking about an event that has happened or could take place",
+    "scale": "Not at all                            Completely"
+  },
+  "Deliberate": {
+    "question": "My thoughts were:",
+    "scale": "Spontaneous                            Deliberate"
+  },
+  "Intrusive": {
+    "question": "My thoughts were intrusive",
+    "scale": "Not at all                            Completely"
+  },
+  "Words": {
+    "question": "My thoughts were in the form of words",
+    "scale": "Not at all                            Completely"
+  },
+  "Abstract": {
+    "question": "My thoughts were about ideas rather than events or objects",
+    "scale": "Not at all                            Completely"
+  },
+  "Creative": {
+    "question": "My thoughts gave me a new insight into something I have thought about before",
+    "scale": "Not at all                            Completely"
+  },
+  "Decoupling": {
+    "question": "My thoughts dragged my attention away from the external world",
+    "scale": "Not at all                            Completely"
+  },
+  "Detailed": {
+    "question": "My thoughts were detailed and specific",
+    "scale": "Not at all                            Completely"
+  },
+  "Temporal D": {
+    "question": "My thoughts were related to:",
+    "scale": "The here and now                            A more distant time"
+  },
+  "Future": {
+    "question": "My thoughts involved future events",
+    "scale": "Not at all                            Completely"
+  },
+  "Important": {
+    "question": "My thoughts were on topics that I care about",
+    "scale": "Not at all                            Completely"
+  },
+  "Stop": {
+    "question": "My thoughts were hard for me to stop",
+    "scale": "Not at all                            Completely"
+  },
+  "Vivid": {
+    "question": "My thoughts were vivid as if I was there",
+    "scale": "Not at all                            Completely"
+  },
+  "Thematic": {
+    "question": "My thoughts at different points in time were all on the same theme",
+    "scale": "Not at all                            Completely"
+  },
+  "Past": {
+    "question": "My thoughts involved past events",
+    "scale": "Not at all                            Completely"
+  },
+  "Self": {
+    "question": "My thoughts involved myself",
+    "scale": "Not at all                            Completely"
+  },
+  "Evolving": {
+    "question": "My thoughts tended to evolve in a series of steps",
+    "scale": "Not at all                            Completely"
+  },
+  "Problem": {
+    "question": "I was thinking about solutions to problems (or goals)",
+    "scale": "Not at all                            Completely"
+  },
+  "Images": {
+    "question": "My thoughts were in the form of images",
+    "scale": "Not at all                            Completely"
+  },
+  "Habit": {
+    "question": "This thought has recurrent themes similar to those I have had before",
+    "scale": "Not at all                            Completely"
+  }
+}

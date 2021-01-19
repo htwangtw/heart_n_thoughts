@@ -1,0 +1,54 @@
+{
+  "Focus": {
+    "question": "My thoughts were focused on the task I was performing",
+    "scale": "Not at all                            Completely"
+  },
+  "Emotion": {
+    "question": "The content of my thoughts was:",
+    "scale": "Negative                            Positive"
+  },
+  "Words": {
+    "question": "My thoughts were in the form of words",
+    "scale": "Not at all                            Completely"
+  },
+  "Evolving": {
+    "question": "My thoughts tended to evolve in a series of steps",
+    "scale": "Not at all                            Completely"
+  },
+  "Detailed": {
+    "question": "My thoughts were detailed and specific",
+    "scale": "Not at all                            Completely"
+  },
+  "Images": {
+    "question": "My thoughts were in the form of images",
+    "scale": "Not at all                            Completely"
+  },
+  "Self": {
+    "question": "My thoughts involved myself",
+    "scale": "Not at all                            Completely"
+  },
+  "Future": {
+    "question": "My thoughts involved future events",
+    "scale": "Not at all                            Completely"
+  },
+  "Deliberate": {
+    "question": "My thoughts were:",
+    "scale": "Spontaneous                            Deliberate"
+  },
+  "Past": {
+    "question": "My thoughts involved past events",
+    "scale": "Not at all                            Completely"
+  },
+  "Other": {
+    "question": "My thoughts involved other people",
+    "scale": "Not at all                            Completely"
+  },
+  "Habit": {
+    "question": "This thought has recurrent themes similar to those I have had before",
+    "scale": "Not at all                            Completely"
+  },
+  "Vivid": {
+    "question": "My thoughts were vivid as if I was there",
+    "scale": "Not at all                            Completely"
+  }
+}
