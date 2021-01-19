@@ -5,6 +5,9 @@ install: requirements.txt
 	pip install -r requirements.txt; \
 
 # Regenerate PCA on control and patient groups separately
-results/pca_control-vs-patients.png : data/task-nbackmindwandering_probes.tsv bin/pca.py
+results/basic_pca/*.png : data/derivatives/nback_derivatives/task-nbackmindwandering_probes.tsv bin/basic_pca.py
 	. env/bin/activate; \
-	python bin/pca.py
+	python bin/basic_pca.py
+	
+clean :
+	rm -rf results/*

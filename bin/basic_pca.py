@@ -8,9 +8,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # execute from the top of dir
-data_dir = Path("data/")
+data_dir = Path("data/derivatives/nback_derivatives")
 results_dir = Path("results/")
-print(str(data_dir / "task-nbackmindwandering_probes.tsv"))
 
 probes = pd.read_csv(data_dir / "task-nbackmindwandering_probes.tsv", sep="\t")
 mask = probes['participant_id'].str.contains(r'CON', na=True)
@@ -41,4 +40,15 @@ for i, (name, df) in enumerate(zip(["controls", "patients"],
     fig.colorbar(f, cax=cax, orientation='vertical')
 
 fig.tight_layout()
-fig.savefig(results_dir / "pca_control-vs-patients.png", dpi=300)
+fig.savefig(results_dir / "basic_pca/pca_control-vs-patients.png", dpi=300)
+
+# PCA on full dataset
+p = zscore(probes[probe_names].values)
+pca = PCA(n_components=4)
+res = pca.fit(p)
+
+plt.matshow(res.components_.T)
+plt.yticks(range(len(probe_names)), probe_names)
+plt.title("full sample")
+plt.savefig(results_dir / "basic_pca/pca_full-sample.png", dpi=300)
+
