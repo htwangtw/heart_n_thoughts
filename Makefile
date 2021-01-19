@@ -1,5 +1,5 @@
 # source env/bin/activate
-install: env requirements.txt
+install: requirements.txt
 	test -d env || virtualenv -p python3 env; \
 	. env/bin/activate; \
 	pip install -r requirements.txt; \
