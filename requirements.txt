@@ -1,0 +1,8 @@
+numpy
+sklearn
+statsmodels
+pandas
+matplotlib
+seaborn
+ipython
+jedi==0.17.2
