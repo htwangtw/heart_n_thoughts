@@ -16,6 +16,6 @@ def insert_groups(df):
         if "CON" in sub:
             groups.append("control")
         else:
-            groups.append("patients")
+            groups.append("patient")
     df.insert(loc=0, column='groups', value=groups)
     return df
