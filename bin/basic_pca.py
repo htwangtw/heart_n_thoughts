@@ -51,4 +51,3 @@ plt.matshow(res.components_.T)
 plt.yticks(range(len(probe_names)), probe_names)
 plt.title("full sample")
 plt.savefig(results_dir / "basic_pca/pca_full-sample.png", dpi=300)
-
