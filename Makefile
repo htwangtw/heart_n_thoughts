@@ -9,5 +9,9 @@ results/basic_pca/pca_control-vs-patients.* : data/derivatives/nback_derivatives
 	. env/bin/activate; \
 	python bin/basic_pca.py
 
+results/task_performance.tsv : data/derivatives/nback_derivatives/task-nbackmindwandering_performance.tsv bin/parse_taskperform.py
+	. env/bin/activate; \
+	python bin/parse_taskperform.py
+
 clean :
 	rm -rf results/*

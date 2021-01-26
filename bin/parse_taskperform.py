@@ -1,8 +1,10 @@
 from pathlib import Path
+from pickle import dump
 
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from seaborn.palettes import dark_palette
 
 from src.util import insert_groups
 
@@ -13,19 +15,19 @@ results_dir = Path("results/")
 df = pd.read_csv(data_dir / "task-nbackmindwandering_performance.tsv",
     sep="\t", index_col=0)
 df = insert_groups(df)
-mask = df['ses'].str.contains(r'base', na=True)
+# mask = df['ses'].str.contains(r'base', na=True)
 
+df = df.reset_index()
+files = []
+for type_name in ["acc", "respRT"]:
+    d = df.melt(id_vars=["participant_id", "groups", "ses", "nBack"],
+        value_vars=[type_name])
+    d = d.drop(["variable"], axis=1)
+    d = d.rename(columns={"value": type_name})
+    files.append(d)
 
-df = df[mask].reset_index()
-df["eff"] = df["acc"] / df["respRT"]
-eff = df.melt(id_vars=["participant_id", "groups", "ses", "nBack"],
-    value_vars=["eff"])
-acc = df.melt(id_vars=["participant_id", "groups", "ses", "nBack"],
-    value_vars=["acc"])
-rt = df.melt(id_vars=["participant_id", "groups", "ses", "nBack"],
-    value_vars=["respRT"])
+performance = files[0]
+performance["rt"] = files[1]["respRT"]
 
-sns.violinplot(data=acc, x="nBack", y="value", hue="groups",
-               split=True)
-sns.despine(left=True)
-plt.show()
+performance.to_csv(results_dir / "task_performance.tsv",
+    index=False, sep="\t")
