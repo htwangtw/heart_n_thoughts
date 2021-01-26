@@ -13,5 +13,9 @@ results/task_performance.tsv : data/derivatives/nback_derivatives/task-nbackmind
 	. env/bin/activate; \
 	python bin/parse_taskperform.py
 
+results/task-nback_summary.tsv : bin/create_summary.py results/basic_pca/pca_control-vs-patients.tsv results/task_performance.tsv
+	. env/bin/activate; \
+	python bin/create_summary.py
+
 clean :
 	rm -rf results/*
