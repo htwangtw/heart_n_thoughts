@@ -16,6 +16,8 @@ results_dir = Path("results/")
 
 # load data
 probes = pd.read_csv(data_dir / "task-nbackmindwandering_probes.tsv", sep="\t")
+baseline = probes["ses"] == "baseline"
+probes_forPCA = probes[baseline]
 mask = probes['participant_id'].str.contains(r'CON', na=True)
 controls = probes[mask]
 asd = probes[~mask]
@@ -50,7 +52,7 @@ fig, axes = plt.subplots(nrows=3, ncols=2,
 pc_patterns = {}
 pc_scores = []
 # PCA on full dataset - see if there's a PC to separate two groups
-z_probes = zscore(probes[probe_names].values)
+z_probes = zscore(probes_forPCA[probe_names].values)
 pca = PCA()
 res = pca.fit(z_probes)
 scree = res.explained_variance_ratio_
@@ -61,7 +63,8 @@ save = probes[['probe_index', 'participant_id',
 save["rt"] = probes['stimEnd'] - probes['stimStart']
 
 # project
-scores = pd.DataFrame(z_probes.dot(selected), index=probes.index,
+full_probes = zscore(probes[probe_names].values)
+scores = pd.DataFrame(full_probes.dot(selected), index=probes.index,
     columns=[f"full_factor_{x}" for x  in range(1, 5)])
 
 pc_patterns["Full sample"] = selected
@@ -85,7 +88,7 @@ for i, (name, df) in enumerate(zip(["controls", "patients"],
         selected *= [-1, 1, -1, -1]
 
     # project on all probes regardless of group
-    scores = pd.DataFrame(z_probes.dot(selected), index=probes.index,
+    scores = pd.DataFrame(full_probes.dot(selected), index=probes.index,
         columns=[f"{name}_factor_{x}" for x  in range(1, 5)])
 
     pc_patterns[name] = selected
