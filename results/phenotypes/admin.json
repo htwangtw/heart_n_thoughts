@@ -1,0 +1,44 @@
+{
+  "Intervention": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Intero_Completion": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "PrimOut": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Compliance": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Dropout": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Site": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "Medication": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "PriorDx": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "AnxietyDx": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "DepressionDx": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "ADHD": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "OCD": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "PTSD": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "CPTSD": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Dyspraxia": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Dyslexia": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "EatingDisorder": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "MINIDx": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "MINIASCDx": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "MINIYes": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  }
+}

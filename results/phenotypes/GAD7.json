@@ -1,0 +1,13 @@
+{
+  "GAD7": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "MeasurementToolMetadata": {
+    "Description": "A free text description of the measurement tool",
+    "TermURL": "A URL to an entity in an ontology corresponding to this tool"
+  }
+}

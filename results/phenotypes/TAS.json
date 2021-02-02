@@ -1,0 +1,34 @@
+{
+  "TAS_total": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "TAS_DDF": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "TAS_DIF": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "TAS_EOT": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "MeasurementToolMetadata": {
+    "Description": "A free text description of the measurement tool",
+    "TermURL": "A URL to an entity in an ontology corresponding to this tool"
+  }
+}
