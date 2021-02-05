@@ -1,6 +1,7 @@
 # project
 scratch
 data
+results/**/*.tsv
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

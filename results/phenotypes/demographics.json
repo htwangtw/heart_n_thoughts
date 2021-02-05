@@ -1,0 +1,44 @@
+{
+  "Age": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "GenderID": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "GenderBirth": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "GenderFit": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Education": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  },
+  "Handedness": {
+    "Descriptions": "fill this in",
+    "Levels": {
+      "item1": "description; delete if not applied",
+      "item2": "description; delete if not applied"
+    }
+  }
+}
