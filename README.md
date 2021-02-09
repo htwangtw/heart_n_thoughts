@@ -1,4 +1,4 @@
-# adie_heartnthought
+# ADIE heart rate and mind wandering analysis 
 Explore heart rate feature in relation to mind wandering thoughts.
 
 Author: Hao-Ting Wang
