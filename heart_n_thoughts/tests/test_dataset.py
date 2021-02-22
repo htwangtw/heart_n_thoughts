@@ -4,7 +4,7 @@ import pandas as pd
 from heart_n_thoughts.dataset import *
 from heart_n_thoughts.tests import get_test_data_path
 
-test_data_dir = get_test_data_path() / "data"
+test_data_dir = get_test_data_path()
 
 def test_parse_taskperform():
     df = parse_taskperform(test_data_dir / "test_performance.tsv")
