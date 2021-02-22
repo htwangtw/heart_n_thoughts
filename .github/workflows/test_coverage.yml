@@ -39,7 +39,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test and return coverage report
       run: |
-        pytest --cov publiccrawler --cov-report xml
+        pytest --cov heart_n_thoughts --cov-report xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1.2.1
       with:
