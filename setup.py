@@ -8,7 +8,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="heart_n_thought",
+    name="heart_n_thoughts",
     version="0.1.0",
     description="ADIE ongoing thought analysis",
     license="MIT",

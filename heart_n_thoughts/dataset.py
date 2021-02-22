@@ -19,7 +19,7 @@ probe_names = ['Focus', 'Future','Past', 'Self', 'Other', 'Emotion',
     'Images', 'Words', 'Evolving', 'Deliberate', 'Detailed','Habit', 'Vivid']
 
 
-def parse_taskperform(in_file, out_file):
+def parse_taskperform(in_file):
     """calculate accuracy and reaction time"""
     df = pd.read_csv(behdata_dir / in_file,
                     sep="\t", index_col=0)
@@ -36,9 +36,6 @@ def parse_taskperform(in_file, out_file):
 
     performance = files[0]
     performance["rt"] = files[1]["respRT"]
-
-    performance.to_csv(results_dir / out_file,
-                       index=False, sep="\t")
     return performance
 
 
@@ -49,8 +46,8 @@ def get_probes(in_file):
 
 
 def save_pca(df, feature_scores):
-    perf = df[['probe_index', 'participant_id', 'ses', 'nBack']]
-    perf.loc[:, "rt"] = df['stimEnd'] - df['stimStart']
+    perf = df.loc[:, ['probe_index', 'participant_id', 'ses', 'nBack']]
+    perf.loc[:, "rt"] = df.loc[:, 'stimEnd'] - df.loc[:, 'stimStart']
 
     master = pd.concat([perf] + feature_scores, axis=1)
     master = master.fillna("n/a")
@@ -68,12 +65,13 @@ def cal_scores(df, name, modifies=None):
     res = pca.fit(z_probes)
 
     pattern = res.components_.T[:, :4]
-    if modifies:
+    if type(modifies) is list:
         pattern *= modifies
 
-    # project
-    scores = pd.DataFrame(z_probes.dot(pattern),
-                          index=z_probes.index,
-                          columns=[f"{name}_factor{x:02d}" for x  in range(1, 5)])
+    # project scores
+    scores = z_probes.dot(pattern)
+    scores.index = df.index
+    scores.columns = [f"{name}_factor{x:02d}" for x  in range(1, 5)]
+
     pattern = pd.DataFrame(pattern, columns=range(1, 5), index=probe_names)
     return pattern, scores, res.explained_variance_ratio_
