@@ -2,9 +2,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from heart_n_thoughts.dataset import *
+from heart_n_thoughts.tests import get_test_data_path
 
-
-test_data_dir = Path(__file__).absolute().parent / "data"
+test_data_dir = get_test_data_path() / "data"
 
 def test_parse_taskperform():
     df = parse_taskperform(test_data_dir / "test_performance.tsv")
