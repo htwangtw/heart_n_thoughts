@@ -1,6 +1,15 @@
 import pandas as pd
 
 
+def sep_group(df, name):
+    mask = df['participant_id'].str.contains(r'CON', na=True)
+    if name == "control":
+        return df[mask]
+    elif name == "asd":
+        return df[~mask]
+    else:
+        return df
+
 def insert_groups(df):
     """
     check subject ID (index of dataframe)
