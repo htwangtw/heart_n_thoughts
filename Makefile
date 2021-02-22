@@ -14,5 +14,10 @@ features : data/derivatives/nback_derivatives/task-nbackmindwandering_probes.tsv
 	. env/bin/activate; \
 	python bin/make_features.py
 
+test:
+	. env/bin/activate; \
+	pip install -e .
+	pytest
+
 clean :
 	rm -rf results/*
