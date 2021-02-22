@@ -24,7 +24,6 @@ def parse_taskperform(in_file):
     df = pd.read_csv(behdata_dir / in_file,
                     sep="\t", index_col=0)
     df = insert_groups(df)
-
     df = df.reset_index()
     files = []
     for type_name in ["acc", "respRT"]:

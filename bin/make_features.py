@@ -29,7 +29,7 @@ for i, name in enumerate(["full", "control", "asd"]):
         pattern, scores, exp_var = dataset.cal_scores(df, name)
     pattern.to_csv(results_dir / "basic_pca" / f"pc_loading_{name}.tsv", sep="\t")
     feature_scores.append(scores)
-    pca_labels.append(scores.columns.tolist())
+    pca_labels += scores.columns.tolist()
     subplot_pca(fig, axes,
                 pattern,
                 exp_var, i, name)
@@ -41,9 +41,20 @@ fig.savefig(results_dir / "basic_pca/pca_control-vs-patients.png", dpi=300)
 # save pca scores
 pca = dataset.save_pca(probes, feature_scores)
 pca = pca.rename(columns={"rt": "probe_rt"})
+# pca.to_csv(results_dir / "basic_pca/pca_control-vs-patients.tsv", sep="\t", index=False)
 
-pca.to_csv(results_dir / "basic_pca/pca_control-vs-patients.tsv", sep="\t", index=False)
+# summaride PCA
+pca_val = ['probe_rt'] + pca_labels
+pca_idx = ['participant_id', 'ses', 'nBack']
 
+pca_cond = pca.pivot_table(pca_val, pca_idx).reset_index()
+pca_all = pca.pivot_table(pca_val, pca_idx[:2])
+merge = [pca_all]
+for label in pca_cond.nBack.unique():
+    df = pca_cond[pca_cond.nBack == label]
+    df.columns = pca_idx + [f"nback_{label}_{v}" for v in df.columns[3:]]
+    merge.append(df.set_index(["participant_id", "ses"]))
+pca_flat = pd.concat(merge, axis=1)
 
 # summary spread sheet for stats
 def flatten_conditions(performance):
@@ -58,23 +69,11 @@ def flatten_conditions(performance):
     perf_flat = perf_flat.loc[:,~perf_flat.columns.duplicated()]
     return perf_flat
 
-performance =  dataset.parse_taskperform("task-nbackmindwandering_probes.tsv")
-performance.to_csv(results_dir / "task_performance.tsv",
-                    index=False, sep="\t")
+performance =  dataset.parse_taskperform("task-nbackmindwandering_performance.tsv")
+performance = performance[performance["ses"] == "baseline"] # select base line only
 perf_flat = flatten_conditions(performance)
 
-pca_val = ['probe_rt'] + pca_labels
-pca_idx = ['participant_id', 'ses', 'nBack']
-
-pca_cond = pca.pivot_table(pca_labels, pca_idx).reset_index()
-pca_all = pca.pivot_table(pca_labels, pca_idx[:2])
-merge = [pca_all]
-for label in pca_cond.nBack.unique():
-    df = pca_cond[pca_cond.nBack == label]
-    df.columns = pca_idx + [f"nback_{label}_{v}" for v in df.columns[3:]]
-    merge.append(df.set_index(["participant_id", "ses"]))
-pca_flat = pd.concat(merge, axis=1)
-
+# combine performance and pca
 summary = pd.concat([perf_flat, pca_flat], axis=1).reset_index()
 summary = summary.loc[:,~summary.columns.duplicated()]
 summary = summary.drop(["nBack"], axis=1)
