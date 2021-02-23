@@ -1,3 +1,6 @@
+[![test and coverage](https://github.com/htwangtw/heart_n_thoughts/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/htwangtw/heart_n_thoughts/actions/workflows/test_coverage.yml)
+[![codecov](https://codecov.io/gh/htwangtw/heart_n_thoughts/branch/main/graph/badge.svg?token=Zhw1DkUDdL)](https://codecov.io/gh/htwangtw/heart_n_thoughts)
+
 # ADIE heart rate and mind wandering analysis 
 Explore heart rate feature in relation to mind wandering thoughts.
 
