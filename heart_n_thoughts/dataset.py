@@ -6,7 +6,7 @@ from scipy.stats import zscore
 from sklearn.decomposition import PCA
 
 
-from heart_n_thoughts.util import insert_groups
+from heart_n_thoughts.utils import insert_groups
 
 
 # execute from the top of dir
@@ -18,12 +18,13 @@ results_dir = Path("results/")
 probe_names = ['Focus', 'Future','Past', 'Self', 'Other', 'Emotion',
     'Images', 'Words', 'Evolving', 'Deliberate', 'Detailed','Habit', 'Vivid']
 
+group_dict = {"sub-CONADIE": "control", "sub-ADIE": "patient"}
 
 def parse_taskperform(in_file):
     """calculate accuracy and reaction time"""
     df = pd.read_csv(behdata_dir / in_file,
                     sep="\t", index_col=0)
-    df = insert_groups(df)
+    df = insert_groups(df, group_dict)
     df = df.reset_index()
     files = []
     for type_name in ["acc", "respRT"]:
@@ -74,3 +75,17 @@ def cal_scores(df, name, modifies=None):
 
     pattern = pd.DataFrame(pattern, columns=range(1, 5), index=probe_names)
     return pattern, scores, res.explained_variance_ratio_
+
+def sep_adie_group(df, name=None):
+    """get control or patiet group"""
+    if "groups" not in df.columns:
+        raise KeyError(f"'groups' not in columns")
+    mask = df['groups'] == "control"
+    if name == "control":
+        return df[mask]
+    elif name == "patient":
+        return df[~mask]
+    elif name is None or name == "full":
+        return df
+    else:
+        raise ValueError(f"group {name} not presented in data")

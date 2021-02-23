@@ -6,13 +6,13 @@ from matplotlib import colors
 
 from heart_n_thoughts import dataset
 from heart_n_thoughts.figures import subplot_pca
-from heart_n_thoughts.util import sep_group
+from heart_n_thoughts.utils import insert_groups
 
 
 results_dir = Path("results/")
 # load data
 probes = dataset.get_probes("task-nbackmindwandering_probes.tsv")
-
+probes = insert_groups(probes, {"sub-CONADIE": "control", "sub-ADIE": "patient"})
 feature_scores = []
 # plotting
 # centre heat map to 0
@@ -21,8 +21,8 @@ colors.TwoSlopeNorm(vmin=-1., vcenter=0., vmax=1)
 fig, axes = plt.subplots(nrows=3, ncols=2,
                          figsize=(5, 9))
 pca_labels = []
-for i, name in enumerate(["full", "control", "asd"]):
-    df = sep_group(probes, name)
+for i, name in enumerate(["full", "control", "patient"]):
+    df = dataset.sep_adie_group(probes, name)
     if name == "control":
         pattern, scores, exp_var = dataset.cal_scores(df, name, modifies=[-1, 1, -1, -1])
     else:
