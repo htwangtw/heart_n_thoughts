@@ -1,3 +1,4 @@
+from itertools import product
 import numpy as np
 import pandas as pd
 from pandas.core import base
@@ -6,13 +7,14 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.decomposition import PCA
-from sklearn.metrics import silhouette_score, adjusted_rand_score
+from sklearn.metrics import silhouette_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GridSearchCV
 
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.utils import shuffle
 
 from heart_n_thoughts.utils import insert_groups
 from heart_n_thoughts.dataset import sep_adie_group
@@ -88,24 +90,24 @@ corr = data.loc[:, col_names_maia].corr()
 mask = np.triu(np.ones_like(corr, dtype=bool))
 
 # explore variables with heatmap
-f, ax = plt.subplots(figsize=(11, 9))
-cmap = sns.diverging_palette(230, 20, as_cmap=True)
-sns.heatmap(corr, mask=mask, cmap=cmap, center=0,
-            square=True, linewidths=.5, cbar_kws={"shrink": .5})
-plt.show()
+# f, ax = plt.subplots(figsize=(11, 9))
+# cmap = sns.diverging_palette(230, 20, as_cmap=True)
+# sns.heatmap(corr, mask=mask, cmap=cmap, center=0,
+#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
+# plt.show()
 
 # PCA
 pca = PCA()
 res = pca.fit(data.loc[:, col_names_maia])
 # res = pca.fit(data.loc[:, col_names])
 
-plt.plot(res.explained_variance_ratio_, "-o")
-plt.show()
-# pattern = pd.DataFrame(res.components_.T, columns=range(1, len(col_names) + 1), index=col_names)
-pattern = pd.DataFrame(res.components_.T, columns=range(1, len(col_names_maia) + 1), index=col_names_maia)
-sns.heatmap(pattern, center=0,
-            square=True, linewidths=.5, cbar_kws={"shrink": .5})
-plt.show()
+# plt.plot(res.explained_variance_ratio_, "-o")
+# plt.show()
+# # pattern = pd.DataFrame(res.components_.T, columns=range(1, len(col_names) + 1), index=col_names)
+# pattern = pd.DataFrame(res.components_.T, columns=range(1, len(col_names_maia) + 1), index=col_names_maia)
+# sns.heatmap(pattern, center=0,
+#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
+# plt.show()
 
 # build k mean pipeline
 true_label_names = data["groups"].tolist()
@@ -116,26 +118,25 @@ n_clusters = len(label_encoder.classes_)
 
 pipe = Pipeline(steps=[
     ("pca", PCA(random_state=42)),
-    ("kemans", KMeans(init="k-means++", n_init=50, max_iter=500, random_state=42))])
+    ("kmeans", KMeans(init="k-means++", n_init=50, max_iter=500, random_state=42))])
 param_grid = {
     'pca__n_components': range(2, len(col_names_maia)),
-    'kemans__n_clusters': range(2, len(col_names_maia)),
+    'kmeans__n_clusters': range(2, len(col_names_maia)),
 }
-
-
 X = data.loc[:, col_names_maia].values
 
-search = GridSearchCV(pipe, param_grid, scoring="silhouette_score")
-search.fit(X)
+def cv_silhouette_scorer(estimator, X):
+    estimator.fit(X)
+    preprocessed_data = estimator["pca"].transform(X)
+    cluster_labels = estimator["kmeans"].labels_
+    num_labels = len(set(cluster_labels))
+    num_samples = X.shape[0]
+    if num_labels in [1,num_samples]:
+        return -1
+    else:
+        return silhouette_score(preprocessed_data, cluster_labels)
 
-
-
-
-# for train_index, test_index in skf.split(X, true_labels):
-#     train = X[train_index]
-#     test = X[test_index]
-#     search.fit(train)
-
-#     preprocessed_data = pipe["pca"].transform(train)
-#     predicted_labels = pipe["kmeans"].labels_
-#     silhouette_score(preprocessed_data, predicted_labels)
+cv = [(slice(None), slice(None))]
+gs = GridSearchCV(estimator=pipe, param_grid=param_grid,
+                  scoring=cv_silhouette_scorer, cv=cv, n_jobs=5)
+gs.fit(X)
