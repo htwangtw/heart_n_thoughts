@@ -13,8 +13,8 @@ def subplot_pca(fig, axes, pattern, scree, i, name):
     axes[i, 0].set_yticklabels(pattern.index)
 
     divider = make_axes_locatable(axes[i, 0])
-    cax = divider.append_axes('right', size='5%', pad=0.1)
-    fig.colorbar(f, cax=cax, orientation='vertical')
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    fig.colorbar(f, cax=cax, orientation="vertical")
 
     # scree plot
     axes[i, 1].plot(scree, "-o")

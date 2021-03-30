@@ -1,7 +1,5 @@
-from itertools import product
 import numpy as np
 import pandas as pd
-from pandas.core import base
 
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -14,116 +12,51 @@ from sklearn.model_selection import GridSearchCV
 
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.utils import shuffle
 
 from heart_n_thoughts.utils import insert_groups
-from heart_n_thoughts.dataset import sep_adie_group
+from heart_n_thoughts.dataset import get_probes, sep_adie_group
+from heart_n_thoughts import dataset
+
+PROBES_FILE = "task-nbackmindwandering_probes.tsv"
+PATH_CONTROLS = "data/phenotype/adie-questionnaires_controls.tsv"
+PATH_PATIENTS = "data/phenotype/adie-questionnaires_patients.tsv"
+GROUP_DICT = {"sub-CONADIE": "control", "sub-ADIE": "patient"}
 
 
-patients = pd.read_csv("data/phenotype/adie-questionnaires_patients.tsv",
-                       sep="\t")
-controls = pd.read_csv("data/phenotype/adie-questionnaires_controls.tsv",
-                      sep="\t")
-
-col_names = ['BPQ', 'TAS_total', 'AQ',
-       'EQ', 'STAI_S', 'STAI_T', 'GAD7', 'PANAS_positive', 'PANAS_negative',
-       'PHQ9', 'UCLA_LS', 'UCLA_upset', 'GSQ_TOTAL', 'MAIA_Noticing',
-       'MAIA_NotDistracting', 'MAIA_NotWorrying', 'MAIA_AttentionRegulation',
-       'MAIA_EmotionalAwareness', 'MAIA_SelfRegulation', 'MAIA_BodyListening',
-       'MAIA_Trusting']
-
-maia_headers = ['MAIA_NotDistracting', 'MAIA_NotWorrying', 'MAIA_AttentionRegulation',
-                'MAIA_EmotionalAwareness', 'MAIA_SelfRegulation', 'MAIA_BodyListening',
-                'MAIA_Trusting']
-
-col_names_maia = ['BPQ', 'TAS_total', 'AQ',
-       'EQ', 'STAI_S', 'STAI_T', 'GAD7', 'PANAS_positive', 'PANAS_negative',
-       'PHQ9', 'UCLA_LS', 'UCLA_upset', 'GSQ_TOTAL',
-       'MAIA_factor01', 'MAIA_factor02', 'MAIA_factor03']
-
-# get common measures (baseline session)
-common = pd.concat([controls, patients], axis=0, join="inner")
-common = insert_groups(common, {"sub-CONADIE": "control", "sub-ADIE": "patient"})
-# remove pointless headers
-common.columns = [c.replace("BL_", "") if "BL_" in c else c for c in common.columns]
-
-# impute per group
-dfs = []
-for name in ["patient", "control"]:
-    df = sep_adie_group(common, name)
-    imp_mean = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
-    tmp = imp_mean.fit_transform(df.loc[:, col_names])
-    df.loc[:, col_names] = tmp
-    dfs.append(df)
-data = pd.concat(dfs, axis=0, join="inner")
-
-# standardise
-scaler = StandardScaler()
-data_z = scaler.fit_transform(data.loc[:, col_names])
-data.loc[:, col_names] = data_z
-
-# # colapse MAIA score with PCA
-# # PCA
-# pca = PCA()
-# res = pca.fit(data.loc[:, maia_headers])
-# plt.plot(res.explained_variance_ratio_, "-o")
-# plt.show()
-# pattern = pd.DataFrame(res.components_.T, columns=range(1, len(maia_headers) + 1), index=maia_headers)
-# sns.heatmap(pattern, center=0,
-#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
-# plt.show()
-
-# get top 3
-pca = PCA(n_components=3)
-maia_pca = pca.fit_transform(data.loc[:, maia_headers])
-for i, pc in enumerate(maia_pca.T):
-    data[f"MAIA_factor{i + 1:02d}"] = pc
-# pattern = pd.DataFrame(res.components_.T[:, :3], columns=range(1, 4), index=maia_headers)
-# sns.heatmap(pattern, center=0,
-#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
-# plt.show()
+def load_probes():
+    # average per subject
+    probes = get_probes(PROBES_FILE)
+    probes = probes[probes["ses"] == "baseline"]
+    pca_labels = probes.columns.tolist()[-13:]
+    probes = probes.pivot_table(index="participant_id", values=pca_labels)
+    probes = insert_groups(probes, GROUP_DICT)
+    return probes
 
 
-# off-diagnal of correlation matrix
-# corr = data.loc[:, col_names].corr()
-corr = data.loc[:, col_names_maia].corr()
-mask = np.triu(np.ones_like(corr, dtype=bool))
-
-# explore variables with heatmap
-# f, ax = plt.subplots(figsize=(11, 9))
-# cmap = sns.diverging_palette(230, 20, as_cmap=True)
-# sns.heatmap(corr, mask=mask, cmap=cmap, center=0,
-#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
-# plt.show()
-
-# PCA
-pca = PCA()
-res = pca.fit(data.loc[:, col_names_maia])
-# res = pca.fit(data.loc[:, col_names])
-
-# plt.plot(res.explained_variance_ratio_, "-o")
-# plt.show()
-# # pattern = pd.DataFrame(res.components_.T, columns=range(1, len(col_names) + 1), index=col_names)
-# pattern = pd.DataFrame(res.components_.T, columns=range(1, len(col_names_maia) + 1), index=col_names_maia)
-# sns.heatmap(pattern, center=0,
-#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
-# plt.show()
-
-# build k mean pipeline
-true_label_names = data["groups"].tolist()
-label_encoder = LabelEncoder()
-true_labels = label_encoder.fit_transform(true_label_names)
-n_clusters = len(label_encoder.classes_)
+def load_assessments():
+    # get common measures (baseline session)
+    patients = pd.read_csv(PATH_PATIENTS, sep="\t")
+    controls = pd.read_csv(PATH_CONTROLS, sep="\t")
+    data = pd.concat([controls, patients], axis=0, join="inner")
+    data = insert_groups(data, GROUP_DICT)
+    # remove pointless headers
+    data.columns = [
+        c.replace("BL_", "") if "BL_" in c else c for c in data.columns
+    ]
+    return data
 
 
-pipe = Pipeline(steps=[
-    ("pca", PCA(random_state=42)),
-    ("kmeans", KMeans(init="k-means++", n_init=50, max_iter=500, random_state=42))])
-param_grid = {
-    'pca__n_components': range(2, len(col_names_maia)),
-    'kmeans__n_clusters': range(2, len(col_names_maia)),
-}
-X = data.loc[:, col_names_maia].values
+def impute_group(rawdata, col_names, strategy):
+    # impute per group
+    dfs = []
+    for name in ["patient", "control"]:
+        df = sep_adie_group(rawdata, name)
+        imp_mean = SimpleImputer(missing_values=np.nan, strategy=strategy)
+        tmp = imp_mean.fit_transform(df.loc[:, col_names])
+        df.loc[:, col_names] = tmp
+        dfs.append(df)
+    return pd.concat(dfs, axis=0, join="inner")
+
 
 def cv_silhouette_scorer(estimator, X):
     estimator.fit(X)
@@ -131,12 +64,146 @@ def cv_silhouette_scorer(estimator, X):
     cluster_labels = estimator["kmeans"].labels_
     num_labels = len(set(cluster_labels))
     num_samples = X.shape[0]
-    if num_labels in [1,num_samples]:
+    if num_labels in [1, num_samples]:
         return -1
     else:
         return silhouette_score(preprocessed_data, cluster_labels)
 
-cv = [(slice(None), slice(None))]
-gs = GridSearchCV(estimator=pipe, param_grid=param_grid,
-                  scoring=cv_silhouette_scorer, cv=cv, n_jobs=5)
-gs.fit(X)
+
+def gen_sklables(data):
+    # build k mean pipeline
+    true_label_names = data["groups"].tolist()
+    label_encoder = LabelEncoder()
+    return label_encoder.fit_transform(true_label_names)
+
+
+def build_clf(X):
+    pipe = Pipeline(
+        steps=[
+            ("standardise", StandardScaler()),
+            ("pca", PCA(whiten=True, random_state=42)),
+            (
+                "kmeans",
+                KMeans(
+                    init="k-means++", n_init=50, max_iter=500, random_state=42
+                ),
+            ),
+        ]
+    )
+
+    param_grid = {
+        "pca__n_components": range(2, X.shape[1]),
+        "kmeans__n_clusters": range(2, X.shape[1]),
+    }
+    cv = [(slice(None), slice(None))]
+    return GridSearchCV(
+        estimator=pipe,
+        param_grid=param_grid,
+        refit=True,
+        scoring=cv_silhouette_scorer,
+        cv=cv,
+        n_jobs=5,
+    )
+
+
+def cv_grid(cv_results):
+    results = pd.DataFrame.from_dict(cv_results)
+    results["params_str"] = results.params.apply(str)
+    return results.pivot(
+        index="param_pca__n_components",
+        columns="param_kmeans__n_clusters",
+        values="mean_test_score",
+    )
+
+
+def clf_subset(data, col_names):
+    X = data.loc[:, col_names].values
+
+    gs = build_clf(X)
+    gs.fit(X)
+    scores_matrix = cv_grid(gs.cv_results_)
+    kmean_labels = gs.best_estimator_.steps[2][1].labels_
+    pca_comp = gs.best_estimator_.steps[1][1].components_.T
+    pca_comp = pd.DataFrame(
+        pca_comp, columns=range(1, pca_comp.shape[1] + 1), index=col_names
+    )
+    pca_scores = gs.best_estimator_.steps[1][1].fit_transform(X)
+
+    print(gs.best_params_)
+
+    plt.imshow(scores_matrix)
+    plt.xlabel("K-mean: number of clusters")
+    plt.xticks(range(scores_matrix.shape[1]), scores_matrix.columns.tolist())
+    plt.ylabel("PCA: number of components")
+    plt.yticks(range(scores_matrix.shape[0]), scores_matrix.index.tolist())
+    plt.show()
+
+    sns.heatmap(
+        pca_comp,
+        center=0,
+        square=True,
+        linewidths=0.5,
+        cbar_kws={"shrink": 0.5},
+    )
+    plt.show()
+    return kmean_labels, pca_scores
+
+
+trait_col = [
+    "BPQ",
+    "TAS_total",
+    "AQ",
+    "EQ",
+    "STAI_S",
+    "STAI_T",
+    "GAD7",
+    "PANAS_positive",
+    "PANAS_negative",
+    "PHQ9",
+    "UCLA_upset",
+    "GSQ_TOTAL",
+]
+
+maia_col = [
+    "MAIA_Noticing",
+    "MAIA_NotDistracting",
+    "MAIA_NotWorrying",
+    "MAIA_AttentionRegulation",
+    "MAIA_EmotionalAwareness",
+    "MAIA_SelfRegulation",
+    "MAIA_BodyListening",
+    "MAIA_Trusting",
+]
+
+exp = [
+    "Deliberate",
+    "Detailed",
+    "Emotion",
+    "Evolving",
+    "Focus",
+    "Future",
+    "Habit",
+    "Images",
+    "Other",
+    "Past",
+    "Self",
+    "Vivid",
+    "Words",
+]
+
+
+# impute all data
+rawdata = load_assessments()
+col_names = trait_col + maia_col
+data = impute_group(rawdata, col_names, "most_frequent")
+probes = load_probes()
+probes = impute_group(probes, exp, "most_frequent")
+
+# fit model
+true_labels = gen_sklables(data)
+# trait_kmean_labels, trait_pca_scores = clf_subset(data, trait_col)
+# plt.close()
+# maia_kmean_labels, maia_pca_scores = clf_subset(data, maia_col)
+# plt.close()
+exp_kmean_labels, exp_pca_scores = clf_subset(probes, exp)
+plt.close()
