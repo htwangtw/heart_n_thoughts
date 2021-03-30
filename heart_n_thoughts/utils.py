@@ -10,16 +10,20 @@ def _check_subject_index(df):
     else:
         return df["participant_id"].tolist()
 
+
 def _look_up_group(sub, groups_dict):
     d = groups_dict.copy()
     if len(d) == 0:
-        raise ValueError(f"No matching key from groups_dict and {sub}; \
-                          check the searching key words")
-    key, item  = d.popitem()
+        raise ValueError(
+            f"No matching key from groups_dict and {sub}; \
+                          check the searching key words"
+        )
+    key, item = d.popitem()
     if key in sub:
         return item
     else:
         return _look_up_group(sub, d)
+
 
 def insert_groups(df, groups_dict):
     """
@@ -40,5 +44,5 @@ def insert_groups(df, groups_dict):
     for sub in sublist:
         group_name = _look_up_group(sub, groups_dict)
         groups.append(group_name)
-    df.insert(loc=0, column='groups', value=groups)
+    df.insert(loc=0, column="groups", value=groups)
     return df

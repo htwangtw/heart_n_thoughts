@@ -27,4 +27,3 @@ ecg_dir = data_dir.glob("sub-*/ses-*/beh/*physio.tsv.gz")
 for ecg_ses in ecg_dir:
     cur_dir = ecg_ses.parent
     paths = find_ecg_files(cur_dir)
-
